@@ -4,7 +4,14 @@ import Button from 'react-bootstrap/Button'
 import axios from 'axios';
 import Swal from 'sweetalert2'
 
+const baseURL = process.env.REACT_APP_BASE_URL;
+const apiKey = process.env.REACT_APP_API_KEY;
+
 function ListProduct(props) {
+
+    // console.log("Cek Base URL:", process.env.REACT_APP_BASE_URL);
+    // console.log("Cek API Key:", process.env.REACT_APP_API_KEY);
+
     const [products, setProducts] = useState([])
 
     useEffect(()=>{
@@ -12,7 +19,13 @@ function ListProduct(props) {
     },[])
 
     const fetchProducts = async () => {
-        await axios.get(`http://localhost:8000/api/product`).then(({data})=>{
+        await axios.get(`${baseURL}/product`
+            , {
+                headers: {
+                    'api_key': apiKey
+                }
+            }
+        ).then(({data})=>{
             setProducts(data)
         })
     }
@@ -34,10 +47,17 @@ function ListProduct(props) {
             return;
         }
 
-        await axios.delete(`http://localhost:8000/api/product/delete/${id}`).then(({data})=>{
+        await axios.delete(`${baseURL}/product/delete/${id}`
+            , {
+                headers: {
+                    'api_key': apiKey
+                }
+            }
+        ).then(({data})=>{
             Swal.fire({
                 icon:"success",
                 text:data.message
+                
             })
             fetchProducts()
         }).catch(({response:{data}})=>{
@@ -57,14 +77,14 @@ function ListProduct(props) {
                     </Link>
                 </div>
                 <div className='col-12'>
-                    <div className='card card-body bg-black bg-opacity-50'>
+                    <div className='card card-body rounded-4 bg-black mb-5'>
                         <div className='table-responsive'>
-                            <table className="table table-borderless mb-0 text-start">
-                                <thead>
+                            <table className="table  table-hover border-dark mb-0 text-start">
+                                <thead className='table-light'>
                                     <tr>
-                                        <th className='col bg-transparent text-white'>Name</th>
-                                        <th className='col bg-transparent text-white'>Description</th>
-                                        <th className='col bg-transparent text-white'>Action</th>
+                                        <th className='col'>Name</th>
+                                        <th className='col'>Description</th>
+                                        <th className='col'>Action</th>
                                     </tr>
                                 </thead>
                                 
@@ -73,9 +93,9 @@ function ListProduct(props) {
                                         products.length > 0 && (
                                             products.map((row, key)=>(
                                                 <tr className='col' key={key}>
-                                                    <td className='bg-transparent text-white align-content-center'>{row.name}</td>
-                                                    <td className='bg-transparent text-white align-content-center'>{row.description}</td>
-                                                    <td className='bg-transparent text-white align-content-center'>
+                                                    <td className='bg-black text-white align-content-center'>{row.name}</td>
+                                                    <td className='bg-black text-white align-content-center'>{row.description}</td>
+                                                    <td className='bg-black text-white align-content-center'>
                                                         <Link className='w-auto me-4 btn btn-secondary' to={`/product/edit/${row.id}`}>Edit</Link>
                                                         <Button className='w-auto' variant='danger' onClick={()=> deleteProduct(row.id)}>Delete</Button>
                                                     </td>

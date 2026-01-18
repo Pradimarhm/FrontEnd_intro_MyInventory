@@ -8,6 +8,9 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
 export default function CreateProduct() {
+    const baseURL = process.env.REACT_APP_BASE_URL;
+    const apiKey = process.env.REACT_APP_API_KEY;
+
     const navigate = useNavigate();
 
     const [name, setTitle] = useState("");
@@ -24,8 +27,13 @@ export default function CreateProduct() {
         // formData.append('image', image)
 
         await axios
-        .post(`http://localhost:8000/api/product/create`, formData)
-        .then(({ data }) => {
+        .post(`${baseURL}/product/create`, formData,
+            {
+                headers: {
+                    'api_key': apiKey
+                }
+            }
+        ).then(({ data }) => {
             Swal.fire({
                 icon: "success",
                 text: data.message,

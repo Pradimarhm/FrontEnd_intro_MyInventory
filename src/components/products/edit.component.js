@@ -8,6 +8,9 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 
 function EditProduct(props) {
+    const baseURL = process.env.REACT_APP_BASE_URL;
+    const apiKey = process.env.REACT_APP_API_KEY;
+
     const navigate = useNavigate();
     const { id } = useParams()
 
@@ -21,7 +24,13 @@ function EditProduct(props) {
     },[])
 
     const fetchProduct = async () => {
-        await axios.get(`http://localhost:8000/api/product/${id}`).then(({data})=>{
+        await axios.get(`${baseURL}/product/${id}`
+            , {
+                headers: {
+                    'api_key': apiKey
+                }
+            }
+        ).then(({data})=>{
             const { name, description } = data.product
             setTitle(name)
             setDescription(description)
@@ -50,7 +59,7 @@ function EditProduct(props) {
         //     formData.append('image', image)
         // }
 
-        await axios.post(`http://localhost:8000/api/product/update/${id}`, formData)
+        await axios.post(`product/update/${id}`, formData)
         .then(({data})=> {
             Swal.fire({
                 icon:"success",
