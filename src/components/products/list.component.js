@@ -5,6 +5,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2'
 
 const baseURL = process.env.REACT_APP_BASE_URL;
+const imageURL = process.env.REACT_APP_IMAGE_URL;
 const apiKey = process.env.REACT_APP_API_KEY;
 
 function ListProduct(props) {
@@ -79,9 +80,10 @@ function ListProduct(props) {
                 <div className='col-12'>
                     <div className='card card-body rounded-4 bg-black mb-5'>
                         <div className='table-responsive'>
-                            <table className="table  table-hover border-dark mb-0 text-start">
+                            <table className="table table-hover border-dark mb-0 text-start">
                                 <thead className='table-light'>
                                     <tr>
+                                        <th className='col'>Preview</th>
                                         <th className='col'>Name</th>
                                         <th className='col'>Description</th>
                                         <th className='col'>Action</th>
@@ -92,11 +94,14 @@ function ListProduct(props) {
                                     {
                                         products.length > 0 && (
                                             products.map((row, key)=>(
-                                                <tr className='col' key={key}>
+                                                <tr key={key}>
+                                                    <td className='bg-black text-white align-content-center'>
+                                                        <img width="50px" height="50px" src={`${imageURL}/product/image/${row.image}`}></img>
+                                                    </td>
                                                     <td className='bg-black text-white align-content-center'>{row.name}</td>
                                                     <td className='bg-black text-white align-content-center'>{row.description}</td>
                                                     <td className='bg-black text-white align-content-center'>
-                                                        <Link className='w-auto me-4 btn btn-secondary' to={`/product/edit/${row.id}`}>Edit</Link>
+                                                        <Link className='w-auto me-sm-2 me-0 mb-md-0 mb-2 btn btn-secondary' to={`/product/update/${row.id}`}>Edit</Link>
                                                         <Button className='w-auto' variant='danger' onClick={()=> deleteProduct(row.id)}>Delete</Button>
                                                     </td>
                                                 </tr>

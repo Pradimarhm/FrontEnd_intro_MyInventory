@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import { Link } from "react-router-dom";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import axios from "axios";
@@ -15,7 +16,7 @@ export default function CreateProduct() {
 
     const [name, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    // const [image, setImage] = useState()
+    const [image, setImage] = useState(null)
     const [validationError, setValidationError] = useState({});
 
     const createProduct = async (e) => {
@@ -24,7 +25,7 @@ export default function CreateProduct() {
         const formData = new FormData();
         formData.append("name", name);
         formData.append("description", description);
-        // formData.append('image', image)
+        formData.append('image', image)
 
         await axios
         .post(`${baseURL}/product/create`, formData,
@@ -43,7 +44,7 @@ export default function CreateProduct() {
 
         .catch(({ response }) => {
             if (response.status === 422) {
-                setValidationError(response.data.errors);
+                setValidationError(response.data.error);
             } else {
                 Swal.fire({
                     text: response.data.message,
@@ -84,7 +85,7 @@ export default function CreateProduct() {
                                                 type="text"
                                                 value={name}
                                                 onChange={(event) => {
-                                                setTitle(event.target.value);
+                                                    setTitle(event.target.value);
                                                 }}
                                             />
                                         </Form.Group>
@@ -107,10 +108,27 @@ export default function CreateProduct() {
                                         </Form.Group>
                                     </Col>
                                 </Row>
-                                <Row className="my-4 justify-content-end px-3 gap-2">
-                                    {/* <Button variant="secondary" className="mt-2 w-25" size="lg" block="block" type="submit">
+
+                                <Row className="my-3">
+                                    <Col>
+                                        <Form.Group controlId="Picture" className="mb-3">
+                                            <Form.Label className="text-white">Choose Picture Product</Form.Label>
+                                            <Form.Control 
+                                                className="bg-black bg-opacity-75 border-0 text-secondary" 
+                                                type="file"
+                                                // value={image}
+                                                onChange={(event)=>{
+                                                    setImage(event.target.files[0]);
+                                                }} 
+                                            />
+                                        </Form.Group>
+                                    </Col>
+                                </Row>
+
+                                <Row className="my-5 justify-content-end px-3 gap-2">
+                                    <Link className="w-100 mt-4 btn btn-lg btn-danger" to={`/product`}>
                                         Batal
-                                    </Button> */}
+                                    </Link>
                                     <Button variant="secondary" className="mt-2 w-100" size="lg" block="block" type="submit">
                                         Save
                                     </Button>

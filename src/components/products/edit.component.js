@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button';
+import { Link } from "react-router-dom";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { useNavigate, useParams } from 'react-router-dom'
@@ -16,7 +17,7 @@ function EditProduct(props) {
 
     const [name, setTitle] = useState("")
     const [description, setDescription] = useState("")
-    // const [image, setImage] = useState(null)
+    const [image, setImage] = useState(null)
     const [validationError,setValidationError] = useState({})
     
     useEffect(()=>{
@@ -42,9 +43,9 @@ function EditProduct(props) {
         })
     }
 
-    // const changeHandler = (event) => {
-    //     setImage(event.target.files[0]);
-    // };
+    const changeHandler = (event) => {
+        setImage(event.target.files[0]);
+    };
 
     const updateProduct = async (e) => {
         e.preventDefault();
@@ -55,11 +56,17 @@ function EditProduct(props) {
         formData.append('name', name)
         formData.append('description', description)
 
-        // if(image!==null){
-        //     formData.append('image', image)
-        // }
+        if(image!==null){
+            formData.append('image', image)
+        }
 
-        await axios.post(`product/update/${id}`, formData)
+        await axios.post(`${baseURL}/product/update/${id}`, formData,
+            {
+                headers: {
+                    'api_key': apiKey
+                }
+            }
+        )
         .then(({data})=> {
             Swal.fire({
                 icon:"success",
@@ -84,10 +91,10 @@ function EditProduct(props) {
             <div className="container">
                 <div className="row justify-content-center">
                     <div className="col-12 col-sm-12 col-md-6">
-                        <div className="card">
+                        <div className="card bg-black bg-opacity-50">
                             <div className="card-body">
-                                <h4 className="card-title">Update Product</h4>
-                                <hr />
+                                <h4 className="card-title text-center text-white">Update Product</h4>
+                                {/* <hr /> */}
                                 <div className="form-wrapper">
                                     {
                                         Object.keys(validationError).length >  0 && (
@@ -110,8 +117,8 @@ function EditProduct(props) {
                                         <Row>
                                             <Col>
                                                 <Form.Group controlId="Name">
-                                                    <Form.Label>Title</Form.Label>
-                                                    <Form.Control type="text" value={name} onChange={(event)=>{
+                                                    <Form.Label className="text-white">Title</Form.Label>
+                                                    <Form.Control className="bg-black bg-opacity-75 border-0 text-white" type="text" value={name} onChange={(event)=>{
                                                     setTitle(event.target.value)
                                                     }}/>
                                                 </Form.Group>
@@ -120,15 +127,26 @@ function EditProduct(props) {
                                         <Row className="my-3">
                                         <Col>
                                             <Form.Group controlId="Description">
-                                                <Form.Label>Description</Form.Label>
-                                                    <Form.Control as="textarea" rows={3} value={description}
+                                                <Form.Label className="text-white">Description</Form.Label>
+                                                    <Form.Control className="bg-black bg-opacity-75 border-0 text-white" as="textarea" rows={3} value={description}
                                                     onChange={(event) => {
                                                         setDescription(event.target.value);
                                                     }}/>
                                                 </Form.Group>
                                             </Col>
                                         </Row>
-                                        <Button variant="primary" className="mt-2" size="lg" block="block" type="submit">
+                                        <Row className="my-3">
+                                            <Col>
+                                                <Form.Group  controlId="Image" className="mb-3">
+                                                    <Form.Label className="text-white">Image</Form.Label>
+                                                    <Form.Control className="bg-black bg-opacity-75 border-0 text-secondary" type="file" onChange={changeHandler} />
+                                                </Form.Group>
+                                            </Col>
+                                        </Row>
+                                        <Link className="w-100 mt-4 btn btn-lg btn-danger" to={`/product`}>
+                                            Batal
+                                        </Link>
+                                        <Button variant="secondary" className="w-100 mt-2" size="lg" block="block" type="submit">
                                             Update
                                         </Button>
                                     </Form>
